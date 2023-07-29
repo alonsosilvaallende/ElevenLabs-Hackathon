@@ -144,5 +144,5 @@ if (prompt := st.chat_input("Tu mensaje")):
         save(audio, "./hola.mp3")
         audio_file = open('./hola.mp3', 'rb')
         audio_bytes = audio_file.read()
-        st.audio(audio_bytes, format='audio/ogg')
+        st.audio(audio_bytes, format='audio/mpeg')
     st.session_state.messages.append({"role": "assistant", "content": full_response})
