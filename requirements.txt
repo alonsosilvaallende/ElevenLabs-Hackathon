@@ -1,6 +1,6 @@
 openai
+tiktoken
 streamlit
 retry
 langchain
 elevenlabs
-tiktoken
