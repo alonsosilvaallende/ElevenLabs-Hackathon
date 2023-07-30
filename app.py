@@ -3,6 +3,7 @@ import openai
 import streamlit as st
 from retry import retry
 from elevenlabs import voices, generate, save, set_api_key
+import tiktoken
 
 #######
 #from dotenv import load_dotenv, find_dotenv
@@ -74,27 +75,101 @@ def inference(audio):
     return result['text']
 
 
-def my_classifier(prompt, default=voice):
-    prediction = llm.predict("""\
-According to the following TEXT, the user wants a voice that is
-1: male and american
-2: female and american
-3: male and british
-4: female and british
-5: the user didn't specify which voice he wants
-Answer only the number: 1, 2, 3, 4, or 5.
-TEXT:"""+prompt)
-    if '1' in prediction:
-        voice = "Adam"
-    elif '2' in prediction:
-        voice = "Bella"
-    elif '3' in prediction:
-        voice = "Daniel"
-    elif '4' in prediction:
-        voice = "Dorothy"
-    else:
-        voice = default
-    return voice
+people = {
+'1': 'Adam',
+'2': 'Antoni',
+'3': 'Arnold',
+'4': 'Bella',
+'5': 'Callum',
+'6': 'Charlie',
+'7': 'Charlotte',
+'8': 'Clyde',
+'9': 'Daniel',
+'10': 'Dave',
+'11': 'Domi',
+'12': 'Dorothy',
+'13': 'Elli',
+'14': 'Emily',
+'15': 'Fin',
+'16': 'Freya',
+'17': 'Gigi',
+'18': 'Giovanni',
+'19': 'Harry',
+'20': 'James',
+'21': 'Jeremy',
+'22': 'Jessie',
+'23': 'Joseph',
+'24': 'Josh',
+'25': 'Liam',
+'26': 'Matilda',
+'27': 'Matthew',
+'28': 'Michael',
+'29': 'Mimi',
+'30': 'Nicole',
+'31': 'Patrick',
+'32': 'Rachel',
+'33': 'Ryan',
+'34': 'Sam',
+'35': 'Serena',
+'36': 'Thomas',
+'37': 'None'
+}
+
+enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
+possible_tokens = {f"{enc.encode(f'{i}')[0]}": 100 for i in range(1,38)}
+
+@retry(tries=10, delay=3)
+def my_classifier(prompt):
+    response = openai.ChatCompletion.create(
+    model='openai/gpt-3.5-turbo',
+    headers={"HTTP-Referer": OPENROUTER_REFERRER},
+    messages=[{
+        'role': 'user',
+        'content': """According to the following TEXT, the user wants a voice that is
+1: Adam, american, deep, narration
+2: Antoni, american, well-rounded, narration
+3: Arnold, american, crisp, narration
+4: Bella, american, soft, narration
+5: Callum, american, hoarse, video games
+6: Charlie, australian, casual, conversational
+7: Charlotte, english-sweden, seductive, video games
+8: Clyde, american, war veteran, video games
+9: Daniel, british, deep, news presenter
+10: Dave, british-essex, conversational, video games
+11: Domi, american, strong, narration
+12: Dorothy, british, pleasant, children's stories
+13: Elli, american, emotional, narration
+14: Emily, american, calm, meditation
+15: Fin, irish, sailor, video games
+16: Freya, american, overhyped, video games
+17: Gigi, american, childish, animation
+18: Giovanni, english-italian, foreigner, audiobook
+19: Harry, american, anxious, video games
+20: James, australian, calm, news
+21: Jeremy, american-irish, excited, narration
+22: Jessie, american, raspy, video games
+23: Joseph, british, ground reporter, news
+24: Josh, american, deep, narration
+25: Liam, american, neutral, narration
+26: Matilda, american, warm, audiobook
+27: Matthew, british, calm, audiobook
+28: Michael, american, orotund, audiobook
+29: Mimi, english-swedish, childish, animation
+30: Nicole, american, whisper, audiobook
+31: Patrick, american, shouty, video games
+32: Rachel, american, calm, narration
+33: Ryan, american, soldier, audiobook
+34: Sam, american, raspy, narration
+35: Serena, american, pleasant, interactive
+36: Thomas, american, calm, meditation
+37: None of the above meets the criteria
+Answer only the number.
+TEXT:""" + prompt
+    }],
+    logit_bias=possible_tokens,
+    max_tokens=1,
+    temperature=0).choices[0].message.content
+    return f"{people[response]}"
 
 @retry(tries=10, delay=1, backoff=2, max_delay=4)
 def llm1(text: str, instructions: str) -> str:
@@ -128,10 +203,14 @@ if (prompt := st.chat_input("Your message")):
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         if "/voice" in prompt:
-            voice = my_classifier(prompt)
-            with open("voice.txt","w") as f:
-                f.write(voice)
-            full_response = "Is this OK for you?"
+            voice_aux = my_classifier(prompt)
+            if voice_aux == "None":
+                full_response = "None of our current voices matches that criteria. Please, try again"
+            else:
+                voice = voice_aux
+                with open("voice.txt","w") as f:
+                    f.write(voice_aux)
+                full_response = "Is this OK for you?"
         elif "/instructions" in prompt:
             instructions = prompt.replace("/instructions", "")
             with open("instructions.txt", "w") as f:
