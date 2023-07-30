@@ -136,7 +136,7 @@ if (prompt := st.chat_input("Your message")):
             instructions = prompt.replace("/instructions", "")
             with open("instructions.txt", "w") as f:
                 f.write(instructions)
-            full_response = "I have copied your new instructions to memory"
+            full_response = "New instructions have been copied to memory"
         else:
             full_response, instructions = llm1(prompt, instructions)
         message_placeholder.markdown(full_response)
