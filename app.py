@@ -12,8 +12,8 @@ from elevenlabs import voices, generate, save, set_api_key
 st.sidebar.title("Assitant Store Factory")
 
 st.sidebar.write("Commands:")
-st.sidebar.write("/voice : choose the characteristics of your assistant's voice")
 st.sidebar.write("/instructions : rewrite the instructions of your assistant")
+st.sidebar.write("/voice : choose the characteristics of your assistant's voice")
 st.sidebar.write("When you are ready save your Assistant")
 st.sidebar.button("Save")
 
