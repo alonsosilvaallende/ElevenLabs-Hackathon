@@ -9,7 +9,7 @@ from elevenlabs import voices, generate, save, set_api_key
 #load_dotenv(find_dotenv())
 #######
 
-st.sidebar.title("Assitant Store Factory")
+st.sidebar.title("Assitant Factory")
 
 st.sidebar.write("Commands:")
 st.sidebar.write("/instructions : rewrite the instructions of your assistant")
