@@ -116,7 +116,7 @@ def llm1(text: str, instructions: str) -> str:
         temperature=0).choices[0].message.content
     return response, instructions
 
-if (prompt := st.chat_input("Tu mensaje")):
+if (prompt := st.chat_input("Your message")):
 #if len(audio)>0:
 #    prompt = inference(audio)
     # Add user message to chat history
