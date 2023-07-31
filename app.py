@@ -70,9 +70,9 @@ import numpy as np
 
 def inference(audio):
     # Save audio to a file:
-    wav_file = open("audio.mp3", "wb")
+    wav_file = open("./audio.mp3", "wb")
     wav_file.write(audio.tobytes())
-    result = w.transcribe("audio.mp3")
+    result = w.transcribe("./audio.mp3")
     text = w.extract_text(result)
     return text[0]
 
