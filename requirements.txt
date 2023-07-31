@@ -5,4 +5,5 @@ retry
 langchain
 elevenlabs
 requests
+streamlit-audiorecorder
 git+https://github.com/stlukey/whispercpp.py
