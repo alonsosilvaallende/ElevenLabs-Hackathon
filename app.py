@@ -67,10 +67,11 @@ def do_nothing():
 w = do_nothing()
 
 import numpy as np
+
 def inference(audio):
     # Save audio to a file:
     with open("audio.mp3", "wb") as f:
-        wav_file.write(audio.tobytes())
+        f.write(audio.tobytes())
     #wav_file = open("./audio.mp3", "wb")
     #wav_file.write(audio.tobytes())
     result = w.transcribe("audio.mp3")
