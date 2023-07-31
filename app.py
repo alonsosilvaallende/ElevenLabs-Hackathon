@@ -65,8 +65,11 @@ from whispercpp import Whisper
 def do_nothing():
     return Whisper('tiny')
 w = do_nothing()
+result = w.transcribe("audio.mp3")
+st.write(w.extract_text(result)[0])
 
 import numpy as np
+
 
 def inference(audio):
     # Save audio to a file:
