@@ -69,13 +69,13 @@ result = w.transcribe("audio.mp3")
 st.write(w.extract_text(result)[0])
 
 import numpy as np
-
-
 def inference(audio):
     # Save audio to a file:
-    wav_file = open("./audio.mp3", "wb")
-    wav_file.write(audio.tobytes())
-    result = w.transcribe("./audio.mp3")
+    with open("audio.mp3", "wb") as f:
+        wav_file.write(audio.tobytes())
+    #wav_file = open("./audio.mp3", "wb")
+    #wav_file.write(audio.tobytes())
+    result = w.transcribe("audio.mp3")
     text = w.extract_text(result)
     return text[0]
 
