@@ -9,12 +9,17 @@ import tiktoken
 #from dotenv import load_dotenv, find_dotenv
 #load_dotenv(find_dotenv())
 #######
+from thispersondoesnotexist import get_online_person, save_picture
+
 
 st.sidebar.title("Assitant Factory")
+st.sidebar.image("a_beautiful_person.jpeg", width=200)
+st.sidebar.write("Picture taken from [https://thispersondoesnotexist.com/](https://thispersondoesnotexist.com/)")
 
 st.sidebar.write("Commands:")
-st.sidebar.write("/instructions : rewrite the instructions of your assistant")
-st.sidebar.write("/voice : choose the characteristics of your assistant's voice")
+st.sidebar.write(":orange[/newpic] : generate a new picture for your assistant")
+st.sidebar.write(":orange[/instructions] : rewrite the instructions of your assistant")
+st.sidebar.write(":orange[/voice] : choose the characteristics of your assistant's voice")
 st.sidebar.write("When you are ready save your Assistant")
 st.sidebar.button("Save")
 
@@ -216,6 +221,11 @@ if (prompt := st.chat_input("Your message")):
             with open("instructions.txt", "w") as f:
                 f.write(instructions)
             full_response = "New instructions have been copied to memory"
+        elif "/newpic" in prompt:
+            picture = get_online_person()
+            save_picture(picture, "a_beautiful_person.jpeg")
+            st.experimental_rerun()
+            full_response = "Is this picture OK for you?"
         else:
             full_response, instructions = llm1(prompt, instructions)
         message_placeholder.markdown(full_response)
