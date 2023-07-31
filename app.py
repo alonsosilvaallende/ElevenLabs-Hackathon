@@ -14,7 +14,7 @@ from thispersondoesnotexist import get_online_person, save_picture
 
 st.sidebar.title("Assitant Factory")
 st.sidebar.image("a_beautiful_person.jpeg", width=200)
-st.sidebar.write("Picture taken from [https://thispersondoesnotexist.com/](https://thispersondoesnotexist.com/)")
+st.sidebar.write("Image taken from [https://thispersondoesnotexist.com/](https://thispersondoesnotexist.com/)")
 
 st.sidebar.write("Commands:")
 st.sidebar.write(":orange[/newpic] : generate a new picture for your assistant")
@@ -22,6 +22,10 @@ st.sidebar.write(":orange[/instructions] : rewrite the instructions of your assi
 st.sidebar.write(":orange[/voice] : choose the characteristics of your assistant's voice")
 st.sidebar.write("When you are ready save your Assistant")
 st.sidebar.button("Save")
+
+from audiorecorder import audiorecorder
+
+audio = audiorecorder("Click to record", "Recording... Click when you're done", key="recorder")
 
 set_api_key(os.getenv("ELEVENLABS_API_KEY"))
 
@@ -55,30 +59,22 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Accept user input or example
-# import whisper
+from whispercpp import Whisper
 
-# from audiorecorder import audiorecorder
+@st.cache_resource
+def do_nothing():
+    return Whisper('tiny')
+w = do_nothing()
 
-#@st.cache_resource
-#def do_nothing():
-#    model = whisper.load_model("tiny")
-#    return model
-#model = do_nothing()
-#audio = audiorecorder("Click to record", "Recording... Click when you're done")
+import numpy as np
 
 def inference(audio):
-    # To save audio to a file:
+    # Save audio to a file:
     wav_file = open("audio.mp3", "wb")
     wav_file.write(audio.tobytes())
-    audio = whisper.load_audio("audio.mp3")
-    audio = whisper.pad_or_trim(audio)
-    mel = whisper.log_mel_spectrogram(audio).to(model.device)
-    _, probs = model.detect_language(mel)
-    input_language = max(probs, key=probs.get)
-    result = whisper.transcribe(audio=audio, model=model,language=input_language, fp16=True, verbose=False)
-    return result['text']
-
+    result = w.transcribe("audio.mp3")
+    text = w.extract_text(result)
+    return text[0]
 
 people = {
 '1': 'Adam',
@@ -196,9 +192,9 @@ def llm1(text: str, instructions: str) -> str:
         temperature=0).choices[0].message.content
     return response, instructions
 
-if (prompt := st.chat_input("Your message")):
-#if len(audio)>0:
-#    prompt = inference(audio)
+if (prompt := st.chat_input("Your message")) or (len(audio)>0):
+    if len(audio)>0:
+        prompt = inference(audio)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
     # Display user message in chat message container
@@ -235,3 +231,16 @@ if (prompt := st.chat_input("Your message")):
         audio_bytes = audio_file.read()
         st.audio(audio_bytes, format='audio/mpeg')
     st.session_state.messages.append({"role": "assistant", "content": full_response})
+
+style_stuff = f"""
+<style>
+    *, html {{
+      scroll-behavior: smooth !important;
+    }}
+    recorder {{
+      position: fixed;
+      bottom: 3rem;
+    }}
+</style>
+"""
+st.markdown(style_stuff, unsafe_allow_html=True)

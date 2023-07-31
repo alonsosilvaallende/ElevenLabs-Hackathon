@@ -5,3 +5,4 @@ retry
 langchain
 elevenlabs
 requests
+git+https://github.com/stlukey/whispercpp.py
