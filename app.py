@@ -72,7 +72,6 @@ def inference(audio):
     # Save audio to a file:
     wav_file = open("./audio.mp3", "wb")
     wav_file.write(audio.tobytes())
-    print(f"{os.system(!ls)}")
     result = w.transcribe("./audio.mp3")
     text = w.extract_text(result)
     return text[0]
