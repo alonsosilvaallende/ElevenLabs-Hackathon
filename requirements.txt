@@ -5,3 +5,4 @@ retry
 langchain
 elevenlabs
 git+https://github.com/alonsosilvaallende/ThisPersonDoesNotExistAPI.git
+requests
