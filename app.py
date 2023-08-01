@@ -9,8 +9,8 @@ from tempfile import NamedTemporaryFile
 from thispersondoesnotexist import get_online_person, save_picture
 
 #######
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
+#from dotenv import load_dotenv, find_dotenv
+#load_dotenv(find_dotenv())
 #######
 
 from audiorecorder import audiorecorder
