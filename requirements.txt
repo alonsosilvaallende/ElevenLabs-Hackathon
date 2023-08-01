@@ -6,5 +6,4 @@ langchain
 elevenlabs
 requests
 streamlit-audiorecorder
-ffmpeg
 git+https://github.com/stlukey/whispercpp.py
