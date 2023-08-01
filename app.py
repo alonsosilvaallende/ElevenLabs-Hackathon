@@ -180,7 +180,7 @@ TEXT:""" + prompt
 @retry(tries=10, delay=1, backoff=2, max_delay=4)
 def llm1(text: str, instructions: str) -> str:
     response = openai.ChatCompletion.create(
-        model='google/palm-2-chat-bison',
+        model='openai/gpt-3.5-turbo',
         headers={
             "HTTP-Referer": OPENROUTER_REFERRER
         },
