@@ -44,7 +44,7 @@ with open("instructions.txt", "r") as f:
 
 from langchain.chat_models import ChatOpenAI
 
-llm = ChatOpenAI(model_name="google/palm-2-chat-bison",
+llm = ChatOpenAI(model_name="openai/gpt-3.5-turbo",
                  streaming=True,
                  temperature=2,
                  headers={"HTTP-Referer": OPENROUTER_REFERRER})
